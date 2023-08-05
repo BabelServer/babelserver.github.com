@@ -3,42 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Status</title>
+    <link rel="stylesheet" href="styles/def.css">
+    <link rel="stylesheet" href="styles/status.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 </head>
 <body>
+    <header></header>
 
-    <p id="data"></p>
+    <div id="status-wrapper">
+        <div class="container">
+            <div class="heading">
+                <h1>ステータス</h1>
+                <p id="current-process">接続中</p>
+            </div>
+            <div id="panel">
+                <div id="panel-ping">
+                    <p>Ping</p>
+                    <p id="ping">20ms</p>
+                </div>
+                <div id="panel-version">
+                    <p>Version</p>
+                    <p id="version">1.17.1</p>
+                </div>
+                <div id="panel-players">
+                    <p id="panel-online">8 / 20</p>
+                    <ul>
+                        <li>YY12256069</li>
+                        <li>YY62581361</li>
+                        <li>YY55419062</li>
+                        <li>YY38383819</li>
+                        <li>YY37636825</li>
+                        <li>YY52401939</li>
+                        <li>YY70386712</li>
+                        <li>YY98307537</li>
+                    </ul>
+                </div>
+                <div>
 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer></footer>
+
+    <script src="/scripts/def.js"></script>
     <script>
+        const $process = $("#current-process");
 
-        function logging (msg) {
-            $("#data").text(msg);
-        }
-
-        logging("connecting...")
+        $process.text("接続中");
+        
 
         const url = "wss://p3855004-ipxg22401hodogaya.kanagawa.ocn.ne.jp:44777";
         const ws = new WebSocket(url);
 
         ws.onerror = function(error) {
-            logging("WebSocket error: " + error);
+            $process.text("接続に失敗しました");
         };
 
         ws.onopen = function() {
-            logging("connected");
-            ws.send(JSON.stringify({msg: "hello", time: new Date().toString()}));
+            $process.text("接続しました");
+            
+            ws.send(JSON.stringify({request: 1}));
 
-            ws.onmessage = function(data) {
-                // const msg = JSON.parse(data.data);
-                console.log(data, data.data);
-                logging(String(data.data));
-            };
+            
+            
+            let left = 30;
+            const interval = setInterval(() => {
+                return clearInterval(interval);
+                console.log(left)
+                if (left === 30) {
+                    $process.text("データを取得中");
+                    const ping = Date.now();
+                    getData()
+                    .then((data) => {
+                        $process.text("データを取得しました");
+                        const pong = Date.now();
+                        const latency = pong - ping;
+                        $("#ping").text(`${latency}ms`);
+                        const json = JSON.parse(data.data);
+                        const players = json.players;
+                        // $("#players").text(`Players: ${server.online}/${server.max}`);
+                    })
+                    .catch(() => $process.text("データの取得に失敗しました"));
+                } else if (left <= 0) {
+                    left = 31;
+                    $process.text("データを取得中");
+                } else $process.text(`${left}秒後に更新します`);
+
+                left--;
+
+            }, 1000);
         };
         
         ws.onclose = function() {
-            logging("disconnected");
+            $process.text("接続が切断されました");
         };
+
+        function getData() {
+            const deferred = $.Deferred();
+
+            let success = false;
+
+            ws.send(JSON.stringify({request: 1}));
+
+            setTimeout(() => {
+                if (!success) {
+                    deferred.reject();
+                }
+            }, 3000);
+
+            ws.onmessage = function(data) {
+                success = true;
+                deferred.resolve(data);
+            };
+
+            return deferred.promise();
+        }
     </script>
 </body>
 </html>

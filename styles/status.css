@@ -1,0 +1,22 @@
+#status-wrapper {
+    padding-top: 120px;
+    color: white;
+}
+
+.heading {
+    /* display: block; */
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.heading p {
+    margin-top: 30px;
+}
+
+#panel {
+    width: 60%;
+    margin: 80px auto;
+    padding: 20px;
+    background-color: hsla(0, 0%, 10%, 0.3);
+    border-radius: 10px;
+}
