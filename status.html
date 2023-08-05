@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+</head>
+<body>
+
+    <p id="data"></p>
+
+    <script>
+
+        function logging (msg) {
+            $("#data").text(msg);
+        }
+
+        logging("connecting...")
+
+        const url = "ws://p3855004-ipxg22401hodogaya.kanagawa.ocn.ne.jp:44777";
+        const ws = new WebSocket(url);
+
+        ws.onerror = function(error) {
+            logging("WebSocket error: " + error);
+        };
+
+        ws.onopen = function() {
+            logging("connected");
+            ws.send(JSON.stringify({msg: "hello", time: new Date().toString()}));
+
+            ws.onmessage = function(data) {
+                // const msg = JSON.parse(data.data);
+                console.log(data, data.data);
+                logging(String(data.data));
+            };
+        };
+        
+        ws.onclose = function() {
+            logging("disconnected");
+        };
+    </script>
+</body>
+</html>
