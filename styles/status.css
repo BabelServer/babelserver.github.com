@@ -19,4 +19,52 @@
     padding: 20px;
     background-color: hsla(0, 0%, 10%, 0.3);
     border-radius: 10px;
+
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.upper-side {
+    flex: auto;
+    width: 33.3334%;
+}
+
+.values {
+    margin: 4px;
+    padding: 8px;
+
+    display: flex;
+
+    background-color: #0404043d;
+    border-radius: 4px;
+}
+
+.value {
+    flex: auto;
+}
+
+#panel-players {
+    flex: auto;
+}
+
+#online {
+    flex: auto;
+    margin: 20px;
+    text-align: center;
+}
+
+#players {
+    display: flex;
+    flex-wrap: wrap;
+
+    margin: 20px;
+    padding: 20px;
+    background-color: #0404043d;
+    border-radius: 4px;
+}
+
+#players p {
+    flex: auto;
+    width: 20%;
+    /* padding: 4px; */
 }

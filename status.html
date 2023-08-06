@@ -18,29 +18,29 @@
                 <p id="current-process">接続中</p>
             </div>
             <div id="panel">
-                <div id="panel-ping">
-                    <p>Ping</p>
-                    <p id="ping">20ms</p>
+                
+                <div id="panel-ping" class="upper-side">
+                    <div class="values">
+                        <p class="value value-left">Ping</p>
+                        <p id="ping" class="value value-right">-</p>
+                    </div>
                 </div>
-                <div id="panel-version">
-                    <p>Version</p>
-                    <p id="version">1.17.1</p>
+                <div id="panel-uptime" class="upper-side">
+                    <div class="values">
+                        <p class="value value-left">Uptime</p>
+                        <p id="uptime" class="value value-right">-</p>
+                    </div>
+                </div>
+                <div id="panel-version" class="upper-side">
+                    <div class="values">
+                        <p class="value value-left">Version</p>
+                        <p id="version" class="value value-right">1.20.12</p>
+                    </div>
                 </div>
                 <div id="panel-players">
-                    <p id="panel-online">8 / 20</p>
-                    <ul>
-                        <li>YY12256069</li>
-                        <li>YY62581361</li>
-                        <li>YY55419062</li>
-                        <li>YY38383819</li>
-                        <li>YY37636825</li>
-                        <li>YY52401939</li>
-                        <li>YY70386712</li>
-                        <li>YY98307537</li>
-                    </ul>
-                </div>
-                <div>
-
+                    <p id="online">-</p>
+                    <div id="players">
+                    </div>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@
             $process.text("接続に失敗しました");
         };
 
-        ws.onopen = function() {
+        ws.onopen = function(socket) {
             $process.text("接続しました");
             
             ws.send(JSON.stringify({request: 1}));
@@ -71,8 +71,10 @@
             
             let left = 30;
             const interval = setInterval(() => {
-                return clearInterval(interval);
-                console.log(left)
+                if (ws.readyState !== WebSocket.OPEN) {
+                    clearInterval(interval);
+                    return;
+                }
                 if (left === 30) {
                     $process.text("データを取得中");
                     const ping = Date.now();
@@ -84,9 +86,18 @@
                         $("#ping").text(`${latency}ms`);
                         const json = JSON.parse(data.data);
                         const players = json.players;
-                        // $("#players").text(`Players: ${server.online}/${server.max}`);
+                        $("#uptime").text(getDateString((Date.now() - json.started), "hh時間 mm分 ss秒"));
+                        $("#online").text(`${players.length} / ${20}`);
+                        $("#players").empty();
+                        players.forEach(p => {
+                            $("#players").append(`<p class="player">${p}</p>`);
+                        })
                     })
-                    .catch(() => $process.text("データの取得に失敗しました"));
+                    .catch(() => {
+                        $process.text("データの取得に失敗しました");
+                        clearInterval(interval);
+                        return;
+                    });
                 } else if (left <= 0) {
                     left = 31;
                     $process.text("データを取得中");
@@ -120,6 +131,26 @@
             };
 
             return deferred.promise();
+        }
+
+        function getDateString(dateString, format) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const hour = date.getHours();
+            const minute = date.getMinutes();
+            const second = date.getSeconds();
+            const millisecond = date.getMilliseconds();
+            const formatted = format
+                .replace(/yyyy/g, year)
+                .replace(/MM/g, `0${month}`.slice(-2))
+                .replace(/dd/g, `0${day}`.slice(-2))
+                .replace(/hh/g, `0${hour}`.slice(-2))
+                .replace(/mm/g, `0${minute}`.slice(-2))
+                .replace(/ss/g, `0${second}`.slice(-2))
+                .replace(/sss/g, `00${millisecond}`.slice(-3));
+            return formatted;
         }
     </script>
 </body>

@@ -24,6 +24,32 @@ a {
     color: #000;
 }
 
+.spinner {
+    width: 32px;
+    height: 32px;
+    margin: 10px auto;
+    border: 4px #ddd solid;
+    border-top: 4px #5d5d5d solid;
+    border-radius: 50%;
+    animation: sp-anime 1.0s infinite linear;
+}
+
+.mini-spinner {
+    width: 16px;
+    height: 16px;
+    margin: 5px auto;
+    border: 2px #ddd solid;
+    border-top: 2px #5d5d5d solid;
+    border-radius: 50%;
+    animation: sp-anime 1.0s infinite linear;
+}
+  
+@keyframes sp-anime {
+    100% { 
+        transform: rotate(360deg); 
+    }
+}
+
 header {
     position: fixed;
     width: 100%;
