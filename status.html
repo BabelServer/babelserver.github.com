@@ -34,13 +34,16 @@
                 <div id="panel-version" class="upper-side">
                     <div class="values">
                         <p class="value value-left">Version</p>
-                        <p id="version" class="value value-right">1.20.12</p>
+                        <p id="version" class="value value-right">-</p>
                     </div>
                 </div>
                 <div id="panel-players">
                     <p id="online">-</p>
                     <div id="players">
                     </div>
+                </div>
+                <div id="panel-ip">
+                    <p id="ip">-</p>
                 </div>
             </div>
         </div>
@@ -58,9 +61,7 @@
         const url = "wss://p3855004-ipxg22401hodogaya.kanagawa.ocn.ne.jp:44777";
         const ws = new WebSocket(url);
 
-        ws.onerror = function(error) {
-            $process.text("接続に失敗しました");
-        };
+        
 
         ws.onopen = function(socket) {
             $process.text("接続しました");
@@ -85,9 +86,11 @@
                         const latency = pong - ping;
                         $("#ping").text(`${latency}ms`);
                         const json = JSON.parse(data.data);
-                        const players = json.players;
+                        const players = json.server.players;
                         $("#uptime").text(getDateString((Date.now() - json.started), "hh時間 mm分 ss秒"));
-                        $("#online").text(`${players.length} / ${20}`);
+                        $("#version").text(json.version);
+                        $("#online").text(`${players.length} / ${json.server.max}`);
+                        $("#ip").text(`Requested: ${json.ip}`);
                         $("#players").empty();
                         players.forEach(p => {
                             $("#players").append(`<p class="player">${p}</p>`);
@@ -110,6 +113,16 @@
         
         ws.onclose = function() {
             $process.text("接続が切断されました");
+            setTimeout(() => {
+                location.reload();
+            }, 3000);
+        };
+
+        ws.onerror = function(error) {
+            $process.text("接続に失敗しました");
+            setTimeout(() => {
+                location.reload();
+            }, 3000);
         };
 
         function getData() {

@@ -45,6 +45,7 @@
 
 #panel-players {
     flex: auto;
+    width: 100%;
 }
 
 #online {
@@ -66,5 +67,26 @@
 #players p {
     flex: auto;
     width: 20%;
+    text-align: center;
     /* padding: 4px; */
+}
+
+#panel-ip {
+    flex: auto;
+    width: 20%;
+    text-align: center;
+    /* display: flex; */
+}
+
+#ip {
+    display: inline-block;
+    color: #000000;
+    background-color: black;
+    border-radius: 3px;
+}
+
+#ip:hover {
+    color: #717171;
+    background-color: rgba(0, 0, 0, 0);
+    transition: all 0.3s ease-in-out;
 }
