@@ -1,6 +1,7 @@
 #status-wrapper {
     padding-top: 120px;
     color: white;
+    /* height: 2000px; */
 }
 
 .heading {
@@ -89,4 +90,9 @@
     color: #717171;
     background-color: rgba(0, 0, 0, 0);
     transition: all 0.3s ease-in-out;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
 }

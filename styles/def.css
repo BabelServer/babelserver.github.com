@@ -57,7 +57,7 @@ header {
     background-color: #032c01c0;
     color: #fff;
     float: left;
-    backdrop-filter: blur(px);
+    backdrop-filter: blur(3px);
 }
 
 .header-left {
@@ -120,4 +120,38 @@ header a {
 
 .header-right a:hover {
     background-color: #12590f;
+}
+
+/* footer */
+
+footer {
+    width: 100%;
+}
+
+.footer {
+    background-color: #101010;
+    color: #000;
+    height: 160px;
+    /* width: 100%; */
+    
+}
+
+.footer-title {
+    /* padding-top: 80px; */
+}
+.footer-title {
+    padding: 65px 0px 10px 60px;
+    color: #ffffff;
+}
+
+/* copyright */
+.copyright {
+    padding: 20px 0px;
+    height: 63px;
+    background-color: #000;
+}
+
+.copyright p {
+    float: right;
+    color: #fff;
 }

@@ -1,0 +1,15 @@
+#donate-wrapper {
+    padding: 120px 0px 50px 0;
+    text-align: center;
+}
+
+#donate {
+    /* display: inline-block;
+    margin-top: auto;
+    margin-bottom: auto; */
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+}
