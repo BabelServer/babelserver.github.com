@@ -27,6 +27,7 @@ $(function () {
                         const latency = pong - ping;
                         $("#ping").text(`${latency}ms`);
                         const json = JSON.parse(data.data);
+                        console.log(json)
                         const players = json.server.players;
                         $("#uptime").text(
                             getDateString(
