@@ -39,7 +39,7 @@ $(function () {
                         $("#online").text(
                             `${players.length} / ${json.server.max}`
                         );
-                        $("#ip").text(`Requested: ${json.ip}`);
+                        $("#ip").text(`Requester: ${json.userPermission.name}`);
                         $("#players").empty();
                         players.forEach(p => {
                             $("#players").append(`<p class="player">${p}</p>`);
