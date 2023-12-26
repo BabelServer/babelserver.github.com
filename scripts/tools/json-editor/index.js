@@ -26,6 +26,37 @@ $(document).ready(function () {
         $("#jsonOutput").val(json);
     });
 
+    $("#get").click(async function () {
+        try {
+            const response = await fetch("http://path.to/shit");
+            const json = await response.json();
+            rootObjects = json;
+            updateRootObjects();
+        } catch (error) {
+            alert("Invalid JSON");
+        }
+    });
+
+    $("#post").click(async function () {
+        const json = JSON.stringify(rootObjects, null, 2);
+        try {
+            const response = await fetch("http://path.to/shit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: json
+            });
+            if (response.ok) {
+                alert("Data posted successfully");
+            } else {
+                alert("Failed to post data");
+            }
+        } catch (error) {
+            alert("An error occurred while posting data");
+        }
+    });
+
     function updateRootObjects() {
         $("#rootObjects").empty();
         rootObjects.forEach((rootObject, index) => {
