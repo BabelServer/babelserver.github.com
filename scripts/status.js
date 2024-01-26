@@ -3,7 +3,7 @@ $(function () {
 
     $process.text("接続中");
 
-    const url = "wss://p4725016-ipxg23301hodogaya.kanagawa.ocn.ne.jp:44777";
+    const url = "wss://p4640006-ipxg23201hodogaya.kanagawa.ocn.ne.jp:44777";
     const ws = new WebSocket(url);
 
     ws.onopen = function (socket) {
