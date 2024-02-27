@@ -1,97 +1,68 @@
+/// <reference types="jquery" />
+
 $(function () {
     const $process = $("#current-process");
 
     $process.text("接続中");
 
-    const url = "wss://p4640006-ipxg23201hodogaya.kanagawa.ocn.ne.jp:44777";
-    const ws = new WebSocket(url);
+    const url = "https://babel.segmentfault.xyz";
 
-    ws.onopen = function (socket) {
-        $process.text("接続しました");
+    let left = 30;
+    const interval = setInterval(() => {
+        if (left === 30) {
+            $process.text("データを取得中");
+            const ping = Date.now();
+            getData()
+                .then(data => {
+                    $process.text("データを取得しました");
 
-        ws.send(JSON.stringify({ request: 1 }));
+                    const pong = Date.now();
 
-        let left = 30;
-        const interval = setInterval(() => {
-            if (ws.readyState !== WebSocket.OPEN) {
-                clearInterval(interval);
-                return;
-            }
-            if (left === 30) {
-                $process.text("データを取得中");
-                const ping = Date.now();
-                getData()
-                    .then(data => {
-                        $process.text("データを取得しました");
-                        const pong = Date.now();
-                        const latency = pong - ping;
-                        $("#ping").text(`${latency}ms`);
-                        const json = JSON.parse(data.data);
-                        console.log(json)
-                        const players = json.server.players;
-                        $("#uptime").text(
-                            getDateString(
-                                Date.now() - json.started,
-                                "hh時間 mm分 ss秒"
-                            )
-                        );
-                        $("#version").text(json.version);
-                        $("#online").text(
-                            `${players.length} / ${json.server.max}`
-                        );
-                        $("#ip").text(`Requester: ${json.userPermission.name}`);
-                        $("#players").empty();
-                        players.forEach(p => {
-                            $("#players").append(`<p class="player">${p}</p>`);
-                        });
-                    })
-                    .catch(() => {
-                        $process.text("データの取得に失敗しました");
-                        clearInterval(interval);
-                        return;
+                    const latency = pong - ping;
+
+                    $("#ping").text(`${latency}ms`);
+
+                    console.log(data);
+
+                    const players = data.minecraftServer.players;
+
+                    // $("#uptime").text(
+                    //     getDateString(
+                    //         Date.now() - json.started,
+                    //         "hh時間 mm分 ss秒"
+                    //     )
+                    // );
+                    $("#uptime").text('不明');
+                    $("#version").text(data.version);
+                    $("#online").text(`${players.length}`);
+                    $("#ip").text(`Requester: ${data.address}`);
+                    $("#players").empty();
+                    players.forEach(p => {
+                        $("#players").append(`<p class="player">${p}</p>`);
                     });
-            } else if (left <= 0) {
-                left = 31;
-                $process.text("データを取得中");
-            } else $process.text(`${left}秒後に更新します`);
+                })
+                .catch(() => {
+                    $process.text("データの取得に失敗しました");
+                    clearInterval(interval);
+                    return;
+                });
+        } else if (left <= 0) {
+            left = 31;
+            $process.text("データを取得中");
+        } else $process.text(`${left}秒後に更新します`);
 
-            left--;
-        }, 1000);
-    };
+        left--;
+    }, 1000);
 
-    ws.onclose = function () {
-        $process.text("接続が切断されました");
-        setTimeout(() => {
-            location.reload();
-        }, 3000);
-    };
+    async function getData() {
+        const res = await fetch(url + '/serverinfo');
+        if(res.status !== 200){
+            throw new Error('Not yet, or Unreachable');
+        }
 
-    ws.onerror = function (error) {
-        $process.text("接続に失敗しました");
-        setTimeout(() => {
-            location.reload();
-        }, 3000);
-    };
+        const data = await res.json();
 
-    function getData() {
-        const deferred = $.Deferred();
-
-        let success = false;
-
-        ws.send(JSON.stringify({ request: 1 }));
-
-        setTimeout(() => {
-            if (!success) {
-                deferred.reject();
-            }
-        }, 3000);
-
-        ws.onmessage = function (data) {
-            success = true;
-            deferred.resolve(data);
-        };
-
-        return deferred.promise();
+        return data;
     }
 
     function getDateString(dateString, format) {
